@@ -18,7 +18,7 @@ function test {
 }
 
 # This could be used to clean up the folder
-rm -rf .git
+#rm -rf .git
 
 if [ -d ".git" ]; then
     echo "Git already initialized, aborting!"
@@ -27,12 +27,12 @@ fi
 
 db=$(pwd | sed -r "s/^.+\/([^\/]+)$/$dropboxConv\/\1/")
 
-if [ ! -d $db ]; then
-    echo "Created to Dropbox"
-	mkdir "$db"
-else
+if [ -d $db ]; then
 	echo "Dropbox repo exists already, aborting!"
 	exit 1
+else
+    echo "Created to Dropbox"
+	test mkdir "$db"
 fi
 
 # initialize
@@ -44,14 +44,14 @@ echo "!*/"         >> .gitignore
 echo "!.gitignore" >> .gitignore
 #echo "!.m"        >> .gitignore
 
-git add .
-git commit -am "Initial commit with gitignore"
+test git add .
+test git commit -am "Initial commit with gitignore"
 
 this=$(pwd)
 
-cd "$db"
-git init --bare
-cd "$this"
+test cd "$db"
+test git init --bare
+test cd "$this"
 
 test git remote add origin "$db"
 test git push -u origin master
